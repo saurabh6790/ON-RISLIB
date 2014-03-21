@@ -86,7 +86,7 @@ wn.views.ReportView = wn.ui.Listing.extend({
 		if(this.doctype == 'Sales Invoice') {doc = 'Bill List'}
 		if(this.doctype == 'Lead') {doc = 'Referring Physicians'}
 		if(this.doctype == 'Advance Entry') {doc = 'Advance Payment Entry'}
-		console.log(doc)
+		// console.log(doc)
 		this.page_title =  wn._(this.docname ? (this.doctype + ' - ' + this.docname) : doc);
 		this.page.appframe.set_title(this.page_title)
 		this.make({

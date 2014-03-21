@@ -227,7 +227,7 @@ Thank you,<br>
 		receiver_parameter=webnotes.conn.get_value('SMS Settings', None, 'receiver_parameter')
 		url = sms_url +"?user="+ args["user"] +"&senderID="+ args["sender ID"] +"&receipientno="+ self.doc.number +"\
 				&dcs="+ args["dcs"]+ "&msgtxt=" + msg +"&state=" +args["state"]
-		webnotes.errprint(url)
+		# webnotes.errprint(url)
 		import requests
 		r = requests.get(url)
 

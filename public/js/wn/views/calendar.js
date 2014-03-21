@@ -68,7 +68,7 @@ wn.views.Calendar = Class.extend({
 		                method: 'selling.doctype.patient_encounter_entry.patient_encounter_entry.get_study',
 		                args:{modality:$("#sel").val()},
 		                callback: function(r) {
-		                		console.log(r)
+		                		// console.log(r)
 		                        for(var i=0;i<(r.message).length;i++){
 		                                var opt = document.createElement("option");
 		                                opt.value = r.message[i][0];
@@ -204,7 +204,7 @@ wn.views.Calendar = Class.extend({
 	prepare_events: function(events) {
 		var me = this;
 		$.each(events, function(i, d) {
-			console.log(['event', d])
+			// console.log(['event', d])
 			d.id = d.name;
 			d.editable = wn.model.can_write(d.doctype || me.doctype);
 			
@@ -221,7 +221,7 @@ wn.views.Calendar = Class.extend({
 				d.allDay = 1;
 				
 			if(d.status) {
-				console.log(['status',status])
+				// console.log(['status',status])
 				if(me.style_map) {
 					$.extend(d, me.styles[me.style_map[d.status]] || {});
 				} else {

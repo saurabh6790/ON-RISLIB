@@ -19,7 +19,7 @@ class DocType:
 		cond = ''
 		if patient_id:
 			cond = self.get_cond(patient_id)
-			webnotes.errprint(cond)
+			# webnotes.errprint(cond)
 
 		for table in tables:
 			if cond:
@@ -27,7 +27,7 @@ class DocType:
 			else:
 				self.remote_to_local(table, cond)
 				self.local_to_remote(table)
-			webnotes.errprint("tab is %s "%patient_id)
+			# webnotes.errprint("tab is %s "%patient_id)
 
 	def remote_to_local(self, table, cond):
 		remote_settings = self.get_remote_settings(table, cond)
@@ -42,7 +42,7 @@ class DocType:
 		remote_settings = self.get_remote_settings(table)
 		local_settings = self.get_local_settings(table)
 		try:
-			webnotes.errprint("""mysqldump -u %(dbuser)s -p'%(dbuserpassword)s' %(dbname)s -t --replace "%(tab)s" > %(file_path)s/dw%(file_name)s.sql"""%local_settings)
+			# webnotes.errprint("""mysqldump -u %(dbuser)s -p'%(dbuserpassword)s' %(dbname)s -t --replace "%(tab)s" > %(file_path)s/dw%(file_name)s.sql"""%local_settings)
 			exec_in_shell("""mysqldump -u %(dbuser)s -p'%(dbuserpassword)s' %(dbname)s -t --replace "%(tab)s" > %(file_path)s/dw%(file_name)s.sql"""%local_settings)
 			exec_in_shell("""mysql --host='%(host_id)s' -u %(remote_dbuser)s -p'%(remote_dbuserpassword)s' %(remote_dbname)s < %(file_path)s/dw%(file_name)s.sql"""%remote_settings)
 		except Exception as inst: pass
