@@ -45,7 +45,8 @@ wn.views.Calendar = Class.extend({
 			// alert("hello")
 			// console.log(['hello',me])
 			this.wrapper = $(this.page).find(".layout-main");
-			(this.wrapper).prepend($('<div class="help" id="help"></div>').html('<select class = "form-control" id="sel" style="width:30%;"><option value=""></option></select> <br><br>'));
+			(this.wrapper).prepend($('<div class="help" id="help"></div>').html('Modality: <select class = "form-control" id="sel" style="width:30%;"><option value=""></option></select> \
+					Study: <select class = "form-control" id="sel1" style="width:30%;"><option value=""></option></select> <br><br>'));
 			
 
 			var dropdown = document.getElementById("sel");
@@ -58,12 +59,25 @@ wn.views.Calendar = Class.extend({
 	                                opt.text = r.message[i][0];
 	                                dropdown.appendChild(opt);
 	                        }
-
 	                }
 	        })
 
 			$("#sel").click(function() {
-				console.log(me.$wrapper)
+				var dropdown = document.getElementById("sel1");
+				wn.call({
+		                method: 'selling.doctype.patient_encounter_entry.patient_encounter_entry.get_study',
+		                args:{modality:$("#sel").val()},
+		                callback: function(r) {
+		                		console.log(r)
+		                        for(var i=0;i<(r.message).length;i++){
+		                                var opt = document.createElement("option");
+		                                opt.value = r.message[i][0];
+		                                opt.text = r.message[i][0];
+		                                dropdown.appendChild(opt);
+		                        }
+		                }
+		        })
+				// console.log(me.$wrapper)
 				$('.fc').remove()
 				$('.alert.alert-info.form-intro-area').remove()
 				me.setup_options()
@@ -86,6 +100,7 @@ wn.views.Calendar = Class.extend({
 	},
 	field_map: {
 		"proj": $("#sel").val(),
+		"proj1": $("#sel1").val(),
 		"id": "name",
 		"start": "start",
 		"end": "end",
@@ -156,6 +171,9 @@ wn.views.Calendar = Class.extend({
 				
 				if($("#sel").val())
 					event[me.field_map.proj] = $("#sel").val()
+
+				if($("#sel1").val())
+					event[me.field_map.proj1] = $("#sel1").val()				
 
 				if(me.field_map.end)
 					event[me.field_map.end] = wn.datetime.get_datetime_as_string(endDate);
