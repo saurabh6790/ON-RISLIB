@@ -152,7 +152,9 @@ wn.ui.toolbar.Toolbar = Class.extend({
 		}
 		$('#toolbar-tools').append('<li><a href="https://login.teamviewer.com/Account/LogOn"  target="_blank"\
 				><i class="icon-fixed-width icon-download"></i> '
-				+wn._('Team Viewer')+'</a></li>');
+				+wn._('Team Viewer')+'</a></li><li><a href="../app.html#dashboard"  target="_self"\
+				><i class="icon-fixed-width icon-download"></i> '
+				+wn._('Dashboard')+'</a></li>');
 	},
 	set_user_name: function() {
 		var fn = user_fullname;

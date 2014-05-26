@@ -337,6 +337,7 @@ wn.views.ReportView = wn.ui.Listing.extend({
 	},
 	
 	get_columns: function() {
+		console.log("get_columns")
 		var std_columns = [{id:'_idx', field:'_idx', name: 'Sr.', width: 40, maxWidth: 40}];
 		if(this.can_delete) {
 			std_columns = std_columns.concat([{
@@ -358,6 +359,7 @@ wn.views.ReportView = wn.ui.Listing.extend({
 		var me = this;
 		this.column_picker = new wn.ui.ColumnPicker(this);
 		this.page.appframe.add_button(wn._('Pick Columns'), function() {
+			console.log(me)
 			me.column_picker.show(me.columns);
 		}, 'icon-th-list');
 	},
@@ -519,11 +521,13 @@ wn.views.ReportView = wn.ui.Listing.extend({
 
 wn.ui.ColumnPicker = Class.extend({
 	init: function(list) {
+		alert("test1")
 		this.list = list;
 		this.doctype = list.doctype;
 		this.selects = {};
 	},
 	show: function(columns) {
+		alert("test1")
 		wn.require('lib/js/lib/jquery/jquery.ui.interactions.min.js');
 		var me = this;
 		if(!this.dialog) {

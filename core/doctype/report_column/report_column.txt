@@ -1,0 +1,55 @@
+[
+ {
+  "creation": "2014-05-13 11:41:36", 
+  "docstatus": 0, 
+  "modified": "2014-05-13 11:41:52", 
+  "modified_by": "Administrator", 
+  "owner": "Administrator"
+ }, 
+ {
+  "autoname": "field:doctype_name", 
+  "doctype": "DocType", 
+  "document_type": "Master", 
+  "module": "Core", 
+  "name": "__common__"
+ }, 
+ {
+  "doctype": "DocField", 
+  "name": "__common__", 
+  "parent": "Report Column", 
+  "parentfield": "fields", 
+  "parenttype": "DocType", 
+  "permlevel": 0
+ }, 
+ {
+  "create": 1, 
+  "doctype": "DocPerm", 
+  "name": "__common__", 
+  "parent": "Report Column", 
+  "parentfield": "permissions", 
+  "parenttype": "DocType", 
+  "permlevel": 0, 
+  "read": 1, 
+  "role": "Administrator", 
+  "write": 1
+ }, 
+ {
+  "doctype": "DocType", 
+  "name": "Report Column"
+ }, 
+ {
+  "doctype": "DocField", 
+  "fieldname": "doctype_name", 
+  "fieldtype": "Data", 
+  "label": "Doctype Name"
+ }, 
+ {
+  "doctype": "DocField", 
+  "fieldname": "columns", 
+  "fieldtype": "Small Text", 
+  "label": "Columns"
+ }, 
+ {
+  "doctype": "DocPerm"
+ }
+]

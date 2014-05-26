@@ -51,7 +51,7 @@ wn.views.Calendar = Class.extend({
 
 			var dropdown = document.getElementById("sel");
 	        wn.call({
-	                method: 'selling.doctype.patient_encounter_entry.patient_encounter_entry.get_modality',
+	                method: 'clinical.doctype.patient_encounter_entry.patient_encounter_entry.get_modality',
 	                callback: function(r) {
 	                        for(var i=0;i<(r.message).length;i++){
 	                                var opt = document.createElement("option");
@@ -65,7 +65,7 @@ wn.views.Calendar = Class.extend({
 			$("#sel").click(function() {
 				var dropdown = document.getElementById("sel1");
 				wn.call({
-		                method: 'selling.doctype.patient_encounter_entry.patient_encounter_entry.get_study',
+		                method: 'clinical.doctype.patient_encounter_entry.patient_encounter_entry.get_study',
 		                args:{modality:$("#sel").val()},
 		                callback: function(r) {
 		                		// console.log(r)

@@ -16,7 +16,7 @@ class DocType:
 		
 	def autoname(self):
 		"""set name as email id"""
-		if self.doc.name not in ('Guest','Administrator'):
+		if self.doc.name not in ('Guest','Administrator', 'SuAdmin'):
 			if self.doc.email:
 				self.doc.email = self.doc.email.strip()
 				
@@ -30,13 +30,13 @@ class DocType:
 
 	def validate(self):
 		self.in_insert = self.doc.fields.get("__islocal")
-		if self.doc.name not in ('Guest','Administrator') and self.doc.email:
+		if self.doc.name not in ('Guest','Administrator','SuAdmin') and self.doc.email:
 			self.validate_email_type(self.doc.email)
 		self.validate_max_users()
 		self.add_system_manager_role()
 		self.check_enable_disable()
 		if self.in_insert:
-			if self.doc.name not in ("Guest", "Administrator") and (self.doc.email or self.doc.number):
+			if self.doc.name not in ("Guest", "Administrator", "SuAdmin") and (self.doc.email or self.doc.number):
 				self.send_welcome_mail()
 				webnotes.msgprint(_("Welcome Message Sent"))
 		else:
@@ -46,7 +46,7 @@ class DocType:
 
 	def check_enable_disable(self):
 		# do not allow disabling administrator/guest
-		if not cint(self.doc.enabled) and self.doc.name in ["Administrator", "Guest"]:
+		if not cint(self.doc.enabled) and self.doc.name in ["Administrator", "Guest", "SuAdmin"]:
 			webnotes.msgprint("Hey! You cannot disable user: %s" % self.doc.name,
 				raise_exception=1)
 				
@@ -238,7 +238,7 @@ Thank you,<br>
 		
 	def on_trash(self):
 		webnotes.clear_cache(user=self.doc.name)
-		if self.doc.name in ["Administrator", "Guest"]:
+		if self.doc.name in ["Administrator", "Guest", "SuAdmin"]:
 			webnotes.msgprint("""Hey! You cannot delete user: %s""" % (self.name, ),
 				raise_exception=1)
 		

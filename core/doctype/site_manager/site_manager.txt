@@ -2,7 +2,7 @@
  {
   "creation": "2014-03-18 12:39:03", 
   "docstatus": 0, 
-  "modified": "2014-03-18 13:20:41", 
+  "modified": "2014-04-11 09:08:08", 
   "modified_by": "Administrator", 
   "owner": "Administrator"
  }, 
@@ -63,6 +63,13 @@
   "fieldtype": "Button", 
   "label": "Make Enable Dissable", 
   "options": "make_enable_dissable"
+ }, 
+ {
+  "doctype": "DocField", 
+  "fieldname": "test_db", 
+  "fieldtype": "Button", 
+  "label": "test db", 
+  "options": "test_db"
  }, 
  {
   "doctype": "DocPerm"

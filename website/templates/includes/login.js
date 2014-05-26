@@ -7,6 +7,8 @@ $(document).ready(function(wrapper) {
 	
 	$('#login_btn').click(login.do_login);
 		
+	$('#sync_db').click(login.do_sync);
+
 	$('#pass').keypress(function(ev){
 		if(ev.which==13 && $('#pass').val()) {
 			$("#login_btn").click();
@@ -17,6 +19,7 @@ $(document).ready(function(wrapper) {
 
 $(window).on("hashchange", function() {
 	var route = window.location.hash.slice(1);
+	// login.set_message(route);
 	if(!route) route = "login";
 	login[route]();
 })
@@ -84,6 +87,35 @@ login.do_login = function(){
 	return false;
 }
 
+login.do_sync = function(){
+	var args = {};
+	args.cmd = "core.doctype.db_sync.db_sync.sync_db_out";
+
+	$('#sync_db').prop("disabled", true);
+	$("#sync-spinner").toggle(true);
+	// $('#login_message').toggle(false);
+
+
+	// $('#login_btn').prop("disabled", true);
+	// $("#login-spinner").toggle(true);
+	// $('#login_message').toggle(false);
+		
+	$.ajax({
+		type: "POST",
+		url: "/",
+		data: args,
+		dataType: "json",
+		success: function(data) {
+			$("#sync-spinner").toggle(false);
+			$('#sync_db').prop("disabled", true);
+			login.set_message("Sync Completed");
+		}	
+	})
+	
+	return false;
+}
+
+
 login.set_heading = function(html) {
 	$(".panel-heading").html("<h4>" + html + "</h4>");
 }
@@ -102,6 +134,10 @@ login.login = function() {
 			No Account? <a class="btn btn-success" style="margin-left: 10px; margin-top: -2px;"\
 				href="#sign_up">Sign Up</button></div>');
 	}
+
+	$("#sync-db").empty().append('<div>\
+			<a class="btn btn-success" style="margin-left: 20px; margin-top: 10px;"\
+				id="sync_db">SYNC DB</button></div>');
 
 	window.is_login = true;
 	window.is_sign_up = false;

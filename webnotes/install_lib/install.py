@@ -19,7 +19,11 @@ class Installer:
 	def __init__(self, root_login, root_password=None, db_name=None, site=None, site_config=None):
 		make_conf(db_name, site=site, site_config=site_config)
 		self.site = site
-		
+
+		if root_password:
+			root_password = root_password[0]
+
+		print root_password
 		self.make_connection(root_login, root_password)
 
 		webnotes.local.conn = self.conn
@@ -31,10 +35,10 @@ class Installer:
 		if root_login:
 			if not root_password:
 				root_password = webnotes.conf.get("root_password") or None
-			
+
 			if not root_password:
 				root_password = getpass.getpass("MySQL root password: ")
-			
+
 		self.root_password = root_password
 		self.conn = webnotes.db.Database(user=root_login, password=root_password)
 		
