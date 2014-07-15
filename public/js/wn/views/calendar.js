@@ -69,6 +69,11 @@ wn.views.Calendar = Class.extend({
 		                args:{modality:$("#sel").val()},
 		                callback: function(r) {
 		                		// console.log(r)
+		                		$("#sel1").empty();
+		                		var opt = document.createElement("option");
+		                        opt.value = '';
+		                        opt.text = '';
+		                        dropdown.appendChild(opt);
 		                        for(var i=0;i<(r.message).length;i++){
 		                                var opt = document.createElement("option");
 		                                opt.value = r.message[i][0];
