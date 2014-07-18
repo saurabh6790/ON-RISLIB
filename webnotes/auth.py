@@ -119,24 +119,37 @@ class LoginManager:
 		self.validate_hour()
 	
 	def authenticate(self, user=None, pwd=None):
-		if self.last_sync():
-			if self.is_active():
-				if not (user and pwd):	
-					user, pwd = webnotes.form_dict.get('usr'), webnotes.form_dict.get('pwd')
-				if not (user and pwd):
-					self.fail('Incomplete login details')
-				
-				self.check_if_enabled(user)
-				self.user = self.check_password(user, pwd)
+		if self.check_mac():
+			if self.last_sync():
+				if self.is_active():
+					if not (user and pwd):	
+						user, pwd = webnotes.form_dict.get('usr'), webnotes.form_dict.get('pwd')
+					if not (user and pwd):
+						self.fail('Incomplete login details')
+					
+					self.check_if_enabled(user)
+					self.user = self.check_password(user, pwd)
+				else:
+					self.fail('Your Account has been deactivated ')
 			else:
-				self.fail('Your Account has been deactivated ')
+				self.fail('Need to sync first')
 		else:
-			self.fail('Need to sync first')
+			self.fail("MAC verification fail")
 
+	def check_mac(self):
+		salted_mac_id = webnotes.conn.get_value("Global Defaults", None, "mac_id")
+		salt = webnotes.conn.get_value("Global Defaults", None, "salt")
+
+		from setup.page.setup_wizard.setup_wizard import encrypt_mac
+
+		digest = encrypt_mac(salt)
+		if salted_mac_id == digest:
+			return True
+		return False
 	def last_sync(self):
 		from webnotes.utils import today,date_diff, cint
-		last_sync_date = webnotes.conn.get_value('Global Defaults', None, 'last_sync_date',debug=1)
-		print last_sync_date
+		last_sync_date = webnotes.conn.get_value('Global Defaults', None, 'last_sync_date')
+		# print last_sync_date
 		if last_sync_date:
 			if cint(webnotes.conn.get_value('Global Defaults', None, 'must_sync_after')) < date_diff(today(), last_sync_date):
 				return False
