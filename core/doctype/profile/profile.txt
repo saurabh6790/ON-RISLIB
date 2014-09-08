@@ -2,7 +2,7 @@
  {
   "creation": "2013-03-07 11:54:44", 
   "docstatus": 0, 
-  "modified": "2014-03-07 16:03:39", 
+  "modified": "2014-09-05 18:21:23", 
   "modified_by": "Administrator", 
   "owner": "Administrator"
  }, 
@@ -221,6 +221,13 @@
   "fieldtype": "Image", 
   "label": "user_image_show", 
   "options": "user_image"
+ }, 
+ {
+  "doctype": "DocField", 
+  "fieldname": "signature_image", 
+  "fieldtype": "Select", 
+  "label": "Signature Image", 
+  "options": "attach_files:"
  }, 
  {
   "doctype": "DocField", 
