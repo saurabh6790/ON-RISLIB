@@ -44,6 +44,8 @@ wn.views.Calendar = Class.extend({
 		if(this.doctype == 'Patient Encounter Entry'){
 			// alert("hello")
 			// console.log(['hello',me])
+			this.patient_id = wn.route_history.slice(-2, -1)[0][2]
+			console.log(wn.route_history)
 			this.wrapper = $(this.page).find(".layout-main");
 			(this.wrapper).prepend($('<div class="help" id="help"></div>').html('Modality: <select class = "form-control" id="sel" style="width:30%;"><option value=""></option></select> \
 					Study: <select class = "form-control" id="sel1" style="width:30%;"><option value=""></option></select> <br><br>'));
@@ -106,6 +108,7 @@ wn.views.Calendar = Class.extend({
 	field_map: {
 		"proj": $("#sel").val(),
 		"proj1": $("#sel1").val(),
+		"patient_id": this.patient_id,
 		"id": "name",
 		"start": "start",
 		"end": "end",
@@ -178,7 +181,10 @@ wn.views.Calendar = Class.extend({
 					event[me.field_map.proj] = $("#sel").val()
 
 				if($("#sel1").val())
-					event[me.field_map.proj1] = $("#sel1").val()				
+					event[me.field_map.proj1] = $("#sel1").val()
+
+				if(me.patient_id)
+					event[me.field_map.patient_id] = me.patient_id			
 
 				if(me.field_map.end)
 					event[me.field_map.end] = wn.datetime.get_datetime_as_string(endDate);
