@@ -119,33 +119,37 @@ class LoginManager:
 		self.validate_hour()
 	
 	def authenticate(self, user=None, pwd=None):
-		# if self.check_mac():
-		# 	if self.last_sync():
-		# 		if self.is_active():
-		if not (user and pwd):	
-			user, pwd = webnotes.form_dict.get('usr'), webnotes.form_dict.get('pwd')
-		if not (user and pwd):
-			self.fail('Incomplete login details')
+		if self.check_mac():
+			if self.last_sync():
+				if self.is_active():
+					if not (user and pwd):	
+						user, pwd = webnotes.form_dict.get('usr'), webnotes.form_dict.get('pwd')
+					if not (user and pwd):
+						self.fail('Incomplete login details')
 		
-		self.check_if_enabled(user)
-		self.user = self.check_password(user, pwd)
-		# 		else:
-		# 			self.fail('Your Account has been deactivated ')
-		# 	else:
-		# 		self.fail('Need to sync first')
-		# else:
-		# 	self.fail("MAC verification fail")
+					self.check_if_enabled(user)
+					self.user = self.check_password(user, pwd)
+				else:
+					self.fail('Your Account has been deactivated ')
+			else:
+				self.fail('Need to sync first')
+		else:
+			self.fail("MAC verification fail")
 
 	def check_mac(self):
-		salted_mac_id = webnotes.conn.get_value("Global Defaults", None, "mac_id")
-		salt = webnotes.conn.get_value("Global Defaults", None, "salt")
+		if webnotes.conn.get_value('Global Defaults', None, 'default_company'):
+			salted_uuid = webnotes.conn.get_value("Global Defaults", None, "mac_id")
+			salt = webnotes.conn.get_value("Global Defaults", None, "salt")
 
-		from setup.page.setup_wizard.setup_wizard import encrypt_mac
+			from setup.page.setup_wizard.setup_wizard import encrypt_uuid
 
-		digest = encrypt_mac(salt)
-		if salted_mac_id == digest:
+			digest = encrypt_uuid(salt)
+			if salted_uuid == digest:
+				return True
+			return False
+		else:
 			return True
-		return False
+
 	def last_sync(self):
 		from webnotes.utils import today,date_diff, cint
 		last_sync_date = webnotes.conn.get_value('Global Defaults', None, 'last_sync_date')
