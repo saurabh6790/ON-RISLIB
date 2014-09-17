@@ -2,7 +2,7 @@
  {
   "creation": "2013-03-07 11:54:44", 
   "docstatus": 0, 
-  "modified": "2014-09-05 18:21:23", 
+  "modified": "2014-09-17 13:39:04", 
   "modified_by": "Administrator", 
   "owner": "Administrator"
  }, 
@@ -94,6 +94,7 @@
   "label": "Number"
  }, 
  {
+  "depends_on": "eval:doc.profile_type==\"Patient\"", 
   "doctype": "DocField", 
   "fieldname": "middle_name", 
   "fieldtype": "Data", 

@@ -143,7 +143,10 @@ wn.ui.toolbar.Toolbar = Class.extend({
 					<i class="icon-fixed-width icon-refresh"></i> '
 					+wn._('Clear Cache & Refresh')+'</a></li>\
 			</ul>\
-		</li>');
+		</li>\
+		<li><a href="../app.html#dashboard"  target="_self"\
+				>'+wn._('Dashboard')+'</a></li>\
+		');
 		
 		if(has_common(user_roles,['Administrator','System Manager'])) {
 			$('#toolbar-tools').append('<li><a href="#" \
