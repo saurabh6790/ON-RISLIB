@@ -521,13 +521,11 @@ wn.views.ReportView = wn.ui.Listing.extend({
 
 wn.ui.ColumnPicker = Class.extend({
 	init: function(list) {
-		alert("test1")
 		this.list = list;
 		this.doctype = list.doctype;
 		this.selects = {};
 	},
 	show: function(columns) {
-		alert("test1")
 		wn.require('lib/js/lib/jquery/jquery.ui.interactions.min.js');
 		var me = this;
 		if(!this.dialog) {
