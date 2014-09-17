@@ -119,7 +119,7 @@ class LoginManager:
 		self.validate_hour()
 	
 	def authenticate(self, user=None, pwd=None):
-		if self.check_mac():
+		if self.check_uuid():
 			if self.last_sync():
 				if self.is_active():
 					if not (user and pwd):	
@@ -134,11 +134,11 @@ class LoginManager:
 			else:
 				self.fail('Need to sync first')
 		else:
-			self.fail("MAC verification fail")
+			self.fail("Hardware verification failed")
 
-	def check_mac(self):
+	def check_uuid(self):
 		if webnotes.conn.get_value('Global Defaults', None, 'default_company'):
-			salted_uuid = webnotes.conn.get_value("Global Defaults", None, "mac_id")
+			salted_uuid = webnotes.conn.get_value("Global Defaults", None, "uuid")
 			salt = webnotes.conn.get_value("Global Defaults", None, "salt")
 
 			from setup.page.setup_wizard.setup_wizard import encrypt_uuid
