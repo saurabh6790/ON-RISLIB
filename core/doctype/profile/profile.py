@@ -36,11 +36,13 @@ class DocType:
 		self.add_system_manager_role()
 		self.check_enable_disable()
 		if self.in_insert:
-			if self.doc.name not in ("Guest", "Administrator", "SuAdmin") and (self.doc.email or self.doc.number):
+			if self.doc.name not in ("Guest", "Administrator", "SuAdmin") and (self.doc.email or self.doc.number) and cint(self.doc.mute_email)!=1:
+				webnotes.msgprint("in")
 				self.send_welcome_mail()
 				webnotes.msgprint(_("Welcome Message Sent"))
 		else:
-			self.email_new_password()
+			if cint(self.doc.mute_email)!=1:
+				self.email_new_password()
 
 		self.doc.new_password = ""
 
