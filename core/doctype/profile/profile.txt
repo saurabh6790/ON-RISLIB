@@ -2,7 +2,11 @@
  {
   "creation": "2013-03-07 11:54:44", 
   "docstatus": 0, 
+<<<<<<< HEAD
   "modified": "2014-09-24 10:01:48", 
+=======
+  "modified": "2014-09-24 20:50:47", 
+>>>>>>> 7d969263affd5ea667fa9f1a9490f05285fd6e66
   "modified_by": "Administrator", 
   "owner": "Administrator"
  }, 
@@ -56,6 +60,13 @@
   "oldfieldname": "enabled", 
   "oldfieldtype": "Check", 
   "read_only": 1
+ }, 
+ {
+  "default": "1", 
+  "doctype": "DocField", 
+  "fieldname": "mute_email", 
+  "fieldtype": "Check", 
+  "label": "Mute Email"
  }, 
  {
   "doctype": "DocField", 

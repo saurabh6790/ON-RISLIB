@@ -29,6 +29,7 @@ class DocType:
 				webnotes.msgprint("Name Exists", raise_exception=True)
 
 	def validate(self):
+		webnotes.errprint("TEST")
 		self.in_insert = self.doc.fields.get("__islocal")
 		if self.doc.name not in ('Guest','Administrator','SuAdmin') and self.doc.email:
 			self.validate_email_type(self.doc.email)
@@ -36,13 +37,18 @@ class DocType:
 		self.add_system_manager_role()
 		self.check_enable_disable()
 		if self.in_insert:
-			if self.doc.name not in ("Guest", "Administrator", "SuAdmin") and (self.doc.email or self.doc.number) and cint(self.doc.mute_email) != 1:
+			if self.doc.name not in ("Guest", "Administrator", "SuAdmin") and (self.doc.email or self.doc.number) and cint(self.doc.mute_email)!=1:
 				self.send_welcome_mail()
 				webnotes.msgprint(_("Welcome Message Sent"))
+			if cint(self.doc.mute_email) == 1 and self.doc.name not in ("Guest", "Administrator", "SuAdmin"):
+				webnotes.conn.sql("insert into __Auth values ('%s', password('%s'))"%(self.doc.name, 'password'))
+				webnotes.conn.sql("commit")
 		else:
-			if cint(self.doc.mute_email) != 1:
+			if cint(self.doc.mute_email)!=1:
 				self.email_new_password()
-
+			if cint(self.doc.mute_email)==1 and self.doc.name not in ("Guest", "Administrator", "SuAdmin") and self.doc.new_password:
+				webnotes.conn.sql("""update __Auth set password=password('%s') where user='%s'"""%(self.doc.new_password, self.doc.name),debug=1)
+				webnotes.conn.sql("commit")
 		self.doc.new_password = ""
 
 	def check_enable_disable(self):
