@@ -11,7 +11,7 @@ import os
 import pxssh
 
 from setup.page.setup_wizard.setup_wizard import import_core_docs
-tables = ['tabPatient Register', 'tabPatient Encounter Entry', 'tabSingles', 'tabLead', 'tabEmployee', 'tabModality', 'tabStudy']
+tables = ['tabPatient Register', 'tabPatient Encounter Entry', 'tabSingles', 'tabLead', 'tabEmployee', 'tabModality', 'tabStudy', 'tabCompany']
 class DocType:
 	def __init__(self, d, dl):
 		self.doc, self.doclist = d, dl
@@ -62,7 +62,8 @@ class DocType:
 		local_settings = self.get_local_settings(table)
 		if table != 'tabSingles':
 			try:
-				# webnotes.errprint("""mysqldump  -u %(dbuser)s -p'%(dbuserpassword)s' %(dbname)s -t --replace "%(tab)s" > %(file_path)s/dw%(file_name)s.sql"""%local_settings)
+				webnotes.errprint("""mysql --host='%(host_id)s'  -u %(remote_dbuser)s -p'%(remote_dbuserpassword)s' %(remote_dbname)s < %(file_path)s/dw%(file_name)s.sql"""%remote_settings)
+				webnotes.errprint("""mysqldump -u %(dbuser)s -p'%(dbuserpassword)s' %(dbname)s -t --replace "%(tab)s" > %(file_path)s/dw%(file_name)s.sql"""%local_settings)
 				exec_in_shell("""mysqldump -u %(dbuser)s -p'%(dbuserpassword)s' %(dbname)s -t --replace "%(tab)s" > %(file_path)s/dw%(file_name)s.sql"""%local_settings)
 				exec_in_shell("""mysql --host='%(host_id)s'  -u %(remote_dbuser)s -p'%(remote_dbuserpassword)s' %(remote_dbname)s < %(file_path)s/dw%(file_name)s.sql"""%remote_settings)
 			except Exception as inst: pass

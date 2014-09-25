@@ -2,7 +2,7 @@
  {
   "creation": "2013-03-07 11:54:44", 
   "docstatus": 0, 
-  "modified": "2014-09-24 12:17:10", 
+  "modified": "2014-09-24 20:50:47", 
   "modified_by": "Administrator", 
   "owner": "Administrator"
  }, 
@@ -58,6 +58,7 @@
   "read_only": 1
  }, 
  {
+  "default": "1", 
   "doctype": "DocField", 
   "fieldname": "mute_email", 
   "fieldtype": "Check", 
