@@ -1,0 +1,38 @@
+table.re tr td {
+                                border:2px ridge black;font-size:12px;border-collapse: collapse;width:50px;\
+                        }
+
+                        table.re {
+                                border:2px ridge black;border-collapse:collapse;
+                        }
+
+                        table.re tr:nth-child(even) { 
+                                text-align:center;
+                                background-color:white;
+                        }
+
+			table.re tr:nth-child(odd) { 
+                                text-align:center;
+                                background-color:#D8D8D8
+			}
+
+                        table.re tr:last-child {
+                                font-weight:bold;
+				text-align:center;
+                                background-color:#8D8D8D;
+                        }
+                        table.re td:last-child {
+                                text-align:justify;
+                        }
+                        /*table tbody td:nth-child(6) {
+                                text-align:right;
+                        }*/
+                        table.re tr:first-child {
+                                font-weight:bold;
+				text-align:center;
+                                background-color:#8D8D8D;
+                        }
+                        /*table.re tr:nth-child(even) { 
+                                text-align:center;
+                                background-color:#D8D8D8
+                        }*/
