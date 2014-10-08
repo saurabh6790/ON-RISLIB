@@ -29,7 +29,7 @@ class DocType:
 				webnotes.msgprint("Name Exists", raise_exception=True)
 
 	def validate(self):
-		webnotes.errprint("TEST")
+		# webnotes.errprint("TEST")
 		self.in_insert = self.doc.fields.get("__islocal")
 		if self.doc.name not in ('Guest','Administrator','SuAdmin') and self.doc.email:
 			self.validate_email_type(self.doc.email)
