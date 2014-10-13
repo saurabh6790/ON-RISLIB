@@ -44,7 +44,9 @@ wn.views.Calendar = Class.extend({
 		if(this.doctype == 'Patient Encounter Entry'){
 			// alert("hello")
 			// console.log(['hello',me])
-			this.patient_id = wn.route_history.slice(-2, -1)[0][2]
+			if( wn.route_history.slice(-2, -1)[0]){
+				this.patient_id = wn.route_history.slice(-2, -1)[0][2]
+			}
 			console.log(wn.route_history)
 			this.wrapper = $(this.page).find(".layout-main");
 			(this.wrapper).prepend($('<div class="help" id="help"></div>').html('Modality: <select class = "form-control" id="sel" style="width:30%;"><option value=""></option></select> \
@@ -174,7 +176,11 @@ wn.views.Calendar = Class.extend({
 				if(jsEvent.day_clicked && view.name=="month")
 					return;
 				var event = wn.model.get_new_doc(me.doctype);
-				
+
+				if( wn.route_history.slice(-2, -1)[0]){
+					me.patient_id = wn.route_history.slice(-2, -1)[0][2]
+				}
+
 				event[me.field_map.start] = wn.datetime.get_datetime_as_string(startDate);
 				
 				if($("#sel").val())
