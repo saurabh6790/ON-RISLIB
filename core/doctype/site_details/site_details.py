@@ -16,11 +16,12 @@ class DocType:
 
 	def on_update(self):
 		webnotes.errprint("hiii")
-		if not (os.path.exists(os.path.join('/home','gangadhar', 'Documents',"sites"))):
-			self.make_primary_sites_settings()
-		if not (os.path.exists(os.path.join('/home','gangadhar', 'Documents',"sites", self.doc.site_name))):
-			self.create_new_site()
-		self.update_global_defaults()
+		#if not (os.path.exists(os.path.join('/home','gangadhar', 'Documents',"sites"))):
+		#	self.make_primary_sites_settings()
+		#if not (os.path.exists(os.path.join('/home','gangadhar', 'Documents',"sites", self.doc.site_name))):
+		#	self.create_new_site()
+		if (os.path.exists(os.path.join(get_base_path(), "sites", self.doc.site_name))):
+			self.update_global_defaults()
 		webnotes.msgprint("Updated")
 
 	def make_primary_sites_settings(self):
@@ -192,7 +193,7 @@ http {
 		with open(os.path.join(get_base_path(), "nginx.conf"), "w") as conf_file:
 			conf_file.write(nginx_conf)
 
-		exec_in_shell(""" echo rohit | sudo -S mv {path}/nginx.conf /etc/nginx/
+		exec_in_shell(""" echo MedSynaptic | sudo -S mv {path}/nginx.conf /etc/nginx/
 			""".format(path=get_base_path(), site_name= self.doc.site_name))
 
 	def create_new_site(self):
@@ -215,10 +216,10 @@ http {
 			with open('hosts', 'wt') as outf:
 				outf.write(s)
 
-		os.system('echo gangadhar | sudo -S mv {path}/hosts /etc/hosts'.format(path=get_base_path()))
+		os.system('echo MedSynaptic | sudo -S mv {path}/hosts /etc/hosts'.format(path=get_base_path()))
 
 	def update_db_name_pwd(self):
-		with open ('/home/gangadhar/Documents/sites/'+self.doc.site_name+'/site_config.json', 'r') as site_config:
+		with open (get_base_path()+'/sites/'+self.doc.site_name+'/site_config.json', 'r') as site_config:
 			lines = site_config.readlines()
 
 		db_name = lines[1].split(':')[1].replace('"','')[:-3]
@@ -260,3 +261,13 @@ def get_installation_note1(_type='POST'):
 	from httplib2 import Http
 	h = Http()
 	webnotes.errprint([h.request])
+
+def create_site():
+	from webnotes.model.code import get_obj
+	webnotes.errprint('test')
+	sites = webnotes.conn.sql("""select name from `tabSite Details` where flag = 'False' """,as_list=1)
+	webnotes.errprint(sites)
+	for site in sites:
+		if not (os.path.exists(os.path.join(get_base_path(), "sites", site[0]))):
+			get_obj('Site Details', site[0]).create_new_site()
+			webnotes.conn.sql("""update `tabSite Details` set flag = 'True' where name = '%s' """%(site[0]),as_list=1)	
