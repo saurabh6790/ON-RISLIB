@@ -10,59 +10,13 @@ from webnotes.utils import get_base_path, today
 import os
 import pxssh
 
-from webnotes.utils import cint, cstr, getdate, now, nowdate, get_defaults
 from setup.page.setup_wizard.setup_wizard import import_core_docs
 tables = ['tabPatient Register', 'tabPatient Encounter Entry', 'tabSingles', 'tabLead', 'tabEmployee', 'tabModality', 'tabStudy', 'tabCompany']
 class DocType:
 	def __init__(self, d, dl):
 		self.doc, self.doclist = d, dl
 
-
-
-	def decrypt(self,key, encryped):
-	    msg = []
-	    for i, c in enumerate(encryped):
-	        key_c = ord(key[i % len(key)])
-	        enc_c = ord(c)
-	        msg.append(chr((enc_c - key_c) % 127))
-	    return ''.join(msg)
-	
-
-
 	def sync_db(self, patient_id=None):
-		# webnotes.errprint("in the sync_db")
-		file_path=os.path.join(get_base_path(), "public")
-		# webnotes.errprint(file_path+'/'+"dbsync.txt")
-		f2=file_path+'/'+"dbsync.txt"
-		salt = self.get_salt()
-		# webnotes.errprint(salt)
-		digest = self.encrypt(salt,cstr(today()))
-		file = open(f2, "w+")
-		file.write(digest)
-		file.write(",")
-		file.write(salt)
-		file.close()
-		# webnotes.errprint("file done")
-		
-		webnotes.conn.set_value("Global Defaults","Global Defaults","db_sync_flag",'Yes')
-		webnotes.conn.sql("commit")
-		
-		
-
-
-		#for line in open(f2, "r"):
-		# 	# data = f.read()
-		# 	# webnotes.errprint(data)
-		#	msg, key = line.strip().split(",")
-		#	webnotes.errprint(msg)
-		#	webnotes.errprint(key)
-
-
-		#decrypt=self.decrypt(key,msg)
-		#webnotes.errprint("decrypt")
-		#webnotes.errprint(getdate(decrypt))
-
-
 		cond = ''
 		if patient_id:
 			cond = self.get_cond(patient_id)
@@ -74,17 +28,7 @@ class DocType:
 			else:
 				self.remote_to_local(table, cond,patient_id)
 				self.local_to_remote(table)
-			# webnotes.errprint("tab is %s "%patient_id)
-
-
-	def encrypt_uuid(self,salt):
-		import os, base64, hashlib, uuid
-
-		# dump_sys_info()
-		digest = hashlib.sha256(salt + today()).hexdigest()
-		# webnotes.errprint(digest)
-
-		return digest			
+			webnotes.errprint("tab is %s "%patient_id)
 
 	def remote_to_local(self, table, cond, patient_id):
 		remote_settings = self.get_remote_settings(table, cond, patient_id)
@@ -104,13 +48,12 @@ class DocType:
 
 	def sync_active_status(self):
 		import MySQLdb
-		is_active = ''
 		webnotes.errprint([self.doc.host_id, self.doc.remote_dbuser, self.doc.remote_dbuserpassword, self.doc.remote_dbname])
 		db = MySQLdb.connect(self.doc.host_id, self.doc.remote_dbuser, self.doc.remote_dbuserpassword, self.doc.remote_dbname)
 		cursor = db.cursor()
-		cursor.execute("select value from `tabSingles` where doctype='Global Defaults' and field='is_active'")
-		is_active = cursor.fetchone()
-		webnotes.conn.sql("update tabSingles set value = '%s' where doctype='Global Defaults' and field='is_active'"%(is_active[0]),debug=1)
+		is_active = cursor.execute("select value from `tabSingles` where doctype='Global Defaults' and field='is_active'")
+		webnotes.errprint(is_active)
+		webnotes.conn.sql("update tabSingles set value = '%s' where doctype='Global Defaults' and field='is_active'"%(is_active),debug=1)
 		webnotes.conn.sql("commit")
 		cursor.execute("commit")
 
@@ -119,8 +62,8 @@ class DocType:
 		local_settings = self.get_local_settings(table)
 		if table != 'tabSingles':
 			try:
-				# webnotes.errprint("""mysql --host='%(host_id)s'  -u %(remote_dbuser)s -p'%(remote_dbuserpassword)s' %(remote_dbname)s < %(file_path)s/dw%(file_name)s.sql"""%remote_settings)
-				# webnotes.errprint("""mysqldump -u %(dbuser)s -p'%(dbuserpassword)s' %(dbname)s -t --replace "%(tab)s" > %(file_path)s/dw%(file_name)s.sql"""%local_settings)
+				webnotes.errprint("""mysql --host='%(host_id)s'  -u %(remote_dbuser)s -p'%(remote_dbuserpassword)s' %(remote_dbname)s < %(file_path)s/dw%(file_name)s.sql"""%remote_settings)
+				webnotes.errprint("""mysqldump -u %(dbuser)s -p'%(dbuserpassword)s' %(dbname)s -t --replace "%(tab)s" > %(file_path)s/dw%(file_name)s.sql"""%local_settings)
 				exec_in_shell("""mysqldump -u %(dbuser)s -p'%(dbuserpassword)s' %(dbname)s -t --replace "%(tab)s" > %(file_path)s/dw%(file_name)s.sql"""%local_settings)
 				exec_in_shell("""mysql --host='%(host_id)s'  -u %(remote_dbuser)s -p'%(remote_dbuserpassword)s' %(remote_dbname)s < %(file_path)s/dw%(file_name)s.sql"""%remote_settings)
 			except Exception as inst: pass
@@ -151,35 +94,12 @@ class DocType:
 				import MySQLdb
 				db = MySQLdb.connect(self.doc.host_id, self.doc.remote_dbuser, self.doc.remote_dbuserpassword, self.doc.remote_dbname)
 				cursor = db.cursor()
-				# webnotes.errprint("delete from `%(table)s` where name like '%(unique_id)s'"%{'table':table, "unique_id":'%%%s%%'%unique_id})
+				webnotes.errprint("delete from `%(table)s` where name like '%(unique_id)s'"%{'table':table, "unique_id":'%%%s%%'%unique_id})
 				cursor.execute("delete from `%(table)s` where name like '%(unique_id)s'"%{'table':table, "unique_id":'%%%s%%'%unique_id})
 				cursor.execute("commit")
 			self.local_to_remote(table)
 
-	def get_salt(self):
-		import os, base64
-		return base64.b64encode(os.urandom(32))			
-
-	def encrypt(self,key, msg):
-		encryped = []
-		for i, c in enumerate(msg):
-			key_c = ord(key[i % len(key)])
-			msg_c = ord(c)
-			encryped.append(chr((msg_c + key_c) % 127))
-		return ''.join(encryped)		
-
 	def set_sync_date(self):
-		# webnotes.errprint("in the sync_db")
-		file_path=os.path.join(get_base_path(), "public")
-		# webnotes.errprint(file_path+'/'+"dbsync.txt")
-		f2=file_path+'/'+"dbsync.txt"
-		salt = self.get_salt()
-		digest = self.encrypt(salt,cstr(today()))
-		file = open(f2, "w+")
-		file.write(digest)
-		file.write(",")
-		file.write(salt)
-		file.close()
 		webnotes.conn.sql("update tabSingles set value = '%s' where doctype = 'Global Defaults' and field = 'last_sync_date'"%(today()))
 		webnotes.conn.sql("commit")
 

@@ -15,7 +15,7 @@ class DocType:
 		self.doc, self.doclist = d, dl
 
 	def on_update(self):
-		webnotes.errprint("hiii")
+		# webnotes.errprint("hiii")
 		#if not (os.path.exists(os.path.join('/home','gangadhar', 'Documents',"sites"))):
 		#	self.make_primary_sites_settings()
 		#if not (os.path.exists(os.path.join('/home','gangadhar', 'Documents',"sites", self.doc.site_name))):
@@ -25,7 +25,7 @@ class DocType:
 		webnotes.msgprint("Updated")
 
 	def make_primary_sites_settings(self):
-		webnotes.errprint("tre")
+		# webnotes.errprint("tre")
 		exec_in_shell("""mkdir {path}/sites """.format(path=get_base_path()))
 
 		with open(os.path.join(get_base_path(), "conf.py"), "a") as conf_file:
@@ -58,6 +58,7 @@ class DocType:
 		exec_in_shell(""" ./lib/wnf.py --build """)
 
 		self.update_nginx_conf()
+
 
 	def update_nginx_conf(self):
 		nginx_conf = """
@@ -197,8 +198,9 @@ http {
 			""".format(path=get_base_path(), site_name= self.doc.site_name))
 
 	def create_new_site(self):
-		webnotes.errprint("root pwd")
+		# webnotes.errprint("root pwd")
 		root_password = webnotes.conn.get_value("Global Defaults", None, "root_password")
+		# webnotes.errprint(get_base_path())
 
 		exec_in_shell("""{path}/lib/wnf.py --install {dbname} --root-password {root_password} --site {name}
 			""".format(path=get_base_path(), dbname=self.doc.site_name.replace('.', '_'), root_password=root_password, name=self.doc.site_name))
@@ -264,10 +266,12 @@ def get_installation_note1(_type='POST'):
 
 def create_site():
 	from webnotes.model.code import get_obj
-	webnotes.errprint('test')
+	# webnotes.errprint('test')
 	sites = webnotes.conn.sql("""select name from `tabSite Details` where flag = 'False' """,as_list=1)
-	webnotes.errprint(sites)
+	# webnotes.errprint(sites)
 	for site in sites:
+		if not (os.path.exists(os.path.join(get_base_path(), "sites"))):
+			get_obj('Site Details', site[0]).make_primary_sites_settings()
 		if not (os.path.exists(os.path.join(get_base_path(), "sites", site[0]))):
 			get_obj('Site Details', site[0]).create_new_site()
 			webnotes.conn.sql("""update `tabSite Details` set flag = 'True' where name = '%s' """%(site[0]),as_list=1)	

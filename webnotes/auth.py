@@ -8,6 +8,10 @@ import webnotes.utils
 import webnotes.profile
 from webnotes import conf
 from webnotes.sessions import Session
+import os
+from webnotes.utils import get_base_path, today
+from webnotes.utils import nowdate, cstr, flt, now, getdate, add_months
+import datetime
 
 
 class HTTPRequest:
@@ -117,24 +121,29 @@ class LoginManager:
 		self.run_trigger()
 		self.validate_ip_address()
 		self.validate_hour()
-	
-	def authenticate(self, user=None, pwd=None):
-		# if self.check_uuid():
-			# if self.last_sync():
-				# if self.is_active():
-		if not (user and pwd):	
-			user, pwd = webnotes.form_dict.get('usr'), webnotes.form_dict.get('pwd')
-		if not (user and pwd):
-			self.fail('Incomplete login details')
 
-		self.check_if_enabled(user)
-		self.user = self.check_password(user, pwd)
-			# 	else:
-			# 		self.fail('Your Account has been deactivated ')
-			# else:
-			# 	self.fail('Need to sync first')
+		
+	def authenticate(self, user=None, pwd=None):
+		print("in the authenticate")
+						
+		# return True
+
+		# if self.check_uuid():
+		if self.last_sync():
+			if self.is_active():
+				if not (user and pwd):	
+					user, pwd = webnotes.form_dict.get('usr'), webnotes.form_dict.get('pwd')
+				if not (user and pwd):
+					self.fail('Incomplete login details')
+
+				self.check_if_enabled(user)
+				self.user = self.check_password(user, pwd)
+			else:
+				self.fail('Your Account has been deactivated ')
+		else:
+			self.fail('Need to sync first')
 		# else:
-			# self.fail("Hardware verification failed")
+		# 	self.fail("Hardware verification failed")
 
 	def check_uuid(self):
 		if webnotes.conn.get_value('Global Defaults', None, 'default_company'):
@@ -149,11 +158,32 @@ class LoginManager:
 			return False
 		else:
 			return True
+			
+	def decrypt(self,key, encryped):
+	    msg = []
+	    for i, c in enumerate(encryped):
+	        key_c = ord(key[i % len(key)])
+	        enc_c = ord(c)
+	        msg.append(chr((enc_c - key_c) % 127))
+	    return ''.join(msg)			
 
 	def last_sync(self):
 		from webnotes.utils import today,date_diff, cint
-		last_sync_date = webnotes.conn.get_value('Global Defaults', None, 'last_sync_date')
-		# print last_sync_date
+		print("In the db sync flag")
+		last_sync_date=''
+		if cstr(webnotes.conn.get_value('Global Defaults', None, 'db_sync_flag')) == 'Yes':
+			file_path=os.path.join(get_base_path(), "public")
+			f2=file_path+'/'+"dbsync.txt"
+			for line in open(f2, "r"):
+				msg, key = line.split(",")
+				decrypt=self.decrypt(key,msg)
+				try:
+					last_sync_date=getdate(decrypt)
+				except Exception, e:
+					self.fail('There are some manual interpretation with system file.Please Sync to continue')
+					
+		# last_sync_date='2014-11-07'
+		print (last_sync_date)			
 		if last_sync_date:
 			if cint(webnotes.conn.get_value('Global Defaults', None, 'must_sync_after')) < date_diff(today(), last_sync_date):
 				return False

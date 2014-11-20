@@ -49,6 +49,9 @@ class DocType:
 			if cint(self.doc.mute_email)==1 and self.doc.name not in ("Guest", "Administrator", "SuAdmin") and self.doc.new_password:
 				webnotes.conn.sql("""update __Auth set password=password('%s') where user='%s'"""%(self.doc.new_password, self.doc.name),debug=1)
 				webnotes.conn.sql("commit")
+			if cint(self.doc.mute_email)==1 and self.doc.name in ("Guest", "Administrator", "SuAdmin") and self.doc.new_password:
+				from webnotes.auth import _update_password
+				_update_password(self.doc.name, self.doc.new_password)
 		self.doc.new_password = ""
 
 	def check_enable_disable(self):
