@@ -203,7 +203,7 @@ http {
 		# webnotes.errprint(get_base_path())
 
 		exec_in_shell("""{path}/lib/wnf.py --install {dbname} --root-password {root_password} --site {name}
-			""".format(path=get_base_path(), dbname=self.doc.site_name.replace('.', '_'), root_password=root_password, name=self.doc.site_name))
+			""".format(path=get_base_path(), dbname=self.doc.site_name[:16].replace('.', '_'), root_password=root_password, name=self.doc.site_name))
 
 		self.add_to_hosts()
 
