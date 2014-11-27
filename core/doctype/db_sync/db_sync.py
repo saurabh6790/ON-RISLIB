@@ -17,52 +17,7 @@ class DocType:
 	def __init__(self, d, dl):
 		self.doc, self.doclist = d, dl
 
-
-
-	def decrypt(self,key, encryped):
-	    msg = []
-	    for i, c in enumerate(encryped):
-	        key_c = ord(key[i % len(key)])
-	        enc_c = ord(c)
-	        msg.append(chr((enc_c - key_c) % 127))
-	    return ''.join(msg)
-	
-
-
 	def sync_db(self, patient_id=None):
-		# webnotes.errprint("in the sync_db")
-		file_path=os.path.join(get_base_path(), "public")
-		# webnotes.errprint(file_path+'/'+"dbsync.txt")
-		f2=file_path+'/'+"dbsync.txt"
-		salt = self.get_salt()
-		# webnotes.errprint(salt)
-		digest = self.encrypt(salt,cstr(today()))
-		file = open(f2, "w+")
-		file.write(digest)
-		file.write(",")
-		file.write(salt)
-		file.close()
-		# webnotes.errprint("file done")
-		
-		webnotes.conn.set_value("Global Defaults","Global Defaults","db_sync_flag",'Yes')
-		webnotes.conn.sql("commit")
-		
-		
-
-
-		#for line in open(f2, "r"):
-		# 	# data = f.read()
-		# 	# webnotes.errprint(data)
-		#	msg, key = line.strip().split(",")
-		#	webnotes.errprint(msg)
-		#	webnotes.errprint(key)
-
-
-		#decrypt=self.decrypt(key,msg)
-		#webnotes.errprint("decrypt")
-		#webnotes.errprint(getdate(decrypt))
-
-
 		cond = ''
 		if patient_id:
 			cond = self.get_cond(patient_id)
@@ -74,17 +29,7 @@ class DocType:
 			else:
 				self.remote_to_local(table, cond,patient_id)
 				self.local_to_remote(table)
-			# webnotes.errprint("tab is %s "%patient_id)
-
-
-	def encrypt_uuid(self,salt):
-		import os, base64, hashlib, uuid
-
-		# dump_sys_info()
-		digest = hashlib.sha256(salt + today()).hexdigest()
-		# webnotes.errprint(digest)
-
-		return digest			
+			# webnotes.errprint("tab is %s "%patient_id)		
 
 	def remote_to_local(self, table, cond, patient_id):
 		remote_settings = self.get_remote_settings(table, cond, patient_id)
@@ -194,6 +139,5 @@ class DocType:
 
 @webnotes.whitelist(allow_guest=True)
 def sync_db_out():
-	webnotes.msgprint("test")
 	from webnotes.model.code import get_obj,get_server_obj
 	get_obj('DB SYNC', 'DB SYNC').sync_db()

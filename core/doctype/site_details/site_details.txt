@@ -2,7 +2,7 @@
  {
   "creation": "2014-04-11 08:45:50", 
   "docstatus": 0, 
-  "modified": "2014-11-19 11:58:33", 
+  "modified": "2014-11-27 15:06:20", 
   "modified_by": "Administrator", 
   "owner": "Administrator"
  }, 
@@ -39,6 +39,12 @@
  }, 
  {
   "doctype": "DocField", 
+  "fieldname": "main_tenant_info", 
+  "fieldtype": "Section Break", 
+  "label": "Main Tenant Info"
+ }, 
+ {
+  "doctype": "DocField", 
   "fieldname": "client_name", 
   "fieldtype": "Data", 
   "label": "Client Name"
@@ -47,20 +53,21 @@
   "doctype": "DocField", 
   "fieldname": "site_name", 
   "fieldtype": "Data", 
-  "label": "Site Name"
+  "label": "Main Tenant Url", 
+  "reqd": 1
  }, 
  {
   "doctype": "DocField", 
   "fieldname": "database_name", 
   "fieldtype": "Data", 
-  "label": "Database Name", 
+  "label": "Main Tenant Database Name", 
   "read_only": 1
  }, 
  {
   "doctype": "DocField", 
   "fieldname": "database_password", 
   "fieldtype": "Password", 
-  "label": "Database Password", 
+  "label": "Main Tenant Database Password", 
   "read_only": 1
  }, 
  {
@@ -74,9 +81,73 @@
   "doctype": "DocField", 
   "fieldname": "flag", 
   "fieldtype": "Select", 
+  "hidden": 1, 
   "label": "Flag", 
   "options": "False\nTrue", 
   "read_only": 1
+ }, 
+ {
+  "doctype": "DocField", 
+  "fieldname": "sub_tenant_details", 
+  "fieldtype": "Section Break", 
+  "label": "Sub Tenant Details"
+ }, 
+ {
+  "doctype": "DocField", 
+  "fieldname": "sub_tenant_required", 
+  "fieldtype": "Select", 
+  "label": "Sub Tenant Required", 
+  "options": "\nYes\nNo", 
+  "reqd": 1
+ }, 
+ {
+  "depends_on": "eval:doc.sub_tenant_required == 'Yes'", 
+  "doctype": "DocField", 
+  "fieldname": "no_of_sub_tenant", 
+  "fieldtype": "Data", 
+  "label": "No of Sub Tenant", 
+  "reqd": 1
+ }, 
+ {
+  "doctype": "DocField", 
+  "fieldname": "column_break_11", 
+  "fieldtype": "Column Break"
+ }, 
+ {
+  "depends_on": "eval:doc.sub_tenant_required != 'Yes'", 
+  "doctype": "DocField", 
+  "fieldname": "offline_setup_required", 
+  "fieldtype": "Select", 
+  "label": " Offline Setup Required", 
+  "options": "\nYes\nNo"
+ }, 
+ {
+  "depends_on": "eval:doc.sub_tenant_required  != 'Yes' && doc.offline_setup_required=='Yes'", 
+  "doctype": "DocField", 
+  "fieldname": "no_of_offline_tenant", 
+  "fieldtype": "Data", 
+  "label": "No of Offline Tenant"
+ }, 
+ {
+  "depends_on": "eval:doc.sub_tenant_required  != 'Yes' && doc.offline_setup_required=='Yes'", 
+  "doctype": "DocField", 
+  "fieldname": "offline_tenant_id", 
+  "fieldtype": "Small Text", 
+  "label": "Offline Tenant Id", 
+  "read_only": 1
+ }, 
+ {
+  "doctype": "DocField", 
+  "fieldname": "section_break_15", 
+  "fieldtype": "Section Break"
+ }, 
+ {
+  "depends_on": "eval:doc.sub_tenant_required == 'Yes'", 
+  "doctype": "DocField", 
+  "fieldname": "sub_tenant", 
+  "fieldtype": "Table", 
+  "label": "Sub Tenant", 
+  "options": "Sub Tenant Details"
  }, 
  {
   "doctype": "DocPerm", 

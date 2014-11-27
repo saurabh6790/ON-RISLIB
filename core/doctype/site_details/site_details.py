@@ -8,6 +8,7 @@ import webnotes
 import os
 from webnotes.utils import get_base_path
 from install_erpnext import exec_in_shell, create_user, parse_args
+from webnotes.model.bean import getlist
 import os, string, random, re
 
 class DocType:
@@ -15,11 +16,6 @@ class DocType:
 		self.doc, self.doclist = d, dl
 
 	def on_update(self):
-		# webnotes.errprint("hiii")
-		#if not (os.path.exists(os.path.join('/home','gangadhar', 'Documents',"sites"))):
-		#	self.make_primary_sites_settings()
-		#if not (os.path.exists(os.path.join('/home','gangadhar', 'Documents',"sites", self.doc.site_name))):
-		#	self.create_new_site()
 		if (os.path.exists(os.path.join(get_base_path(), "sites", self.doc.site_name))):
 			self.update_global_defaults()
 		webnotes.msgprint("Updated")
@@ -198,23 +194,28 @@ http {
 			""".format(path=get_base_path(), site_name= self.doc.site_name))
 
 	def create_new_site(self):
-		# webnotes.errprint("root pwd")
 		root_password = webnotes.conn.get_value("Global Defaults", None, "root_password")
-		# webnotes.errprint(get_base_path())
+		# self.initiate_tenant_ctreation(root_password, self.doc.site_name, True)
+
+		for row in getlist(self.doclist, 'sub_tenant'):
+			self.initiate_tenant_ctreation(root_password, row.sub_tenant_url)	
+
+	def initiate_tenant_ctreation(self, root_password, site_name, is_parent=False):
 
 		exec_in_shell("""{path}/lib/wnf.py --install {dbname} --root-password {root_password} --site {name}
-			""".format(path=get_base_path(), dbname=self.doc.site_name[:16].replace('.', '_'), root_password=root_password, name=self.doc.site_name))
+			""".format(path=get_base_path(), dbname=site_name[:16].replace('.', '_'), root_password=root_password, name=site_name))
 
-		self.add_to_hosts()
+		self.add_to_hosts(site_name)
 
 		exec_in_shell("{path}/lib/wnf.py --build".format(path=get_base_path()))
 
-		self.update_db_name_pwd()
+		if is_parent:
+			self.update_db_name_pwd()
 
-	def add_to_hosts(self):
+	def add_to_hosts(self, site_name):
 		webnotes.errprint("host")
 		with open('/etc/hosts', 'rt') as f:
-			s = f.read() + '\n' + '127.0.0.1\t\t\t %s \n'%self.doc.site_name
+			s = f.read() + '\n' + '127.0.0.1\t\t\t %s \n'%site_name
 			with open('hosts', 'wt') as outf:
 				outf.write(s)
 
@@ -266,12 +267,16 @@ def get_installation_note1(_type='POST'):
 
 def create_site():
 	from webnotes.model.code import get_obj
-	# webnotes.errprint('test')
+	webnotes.errprint('test')
 	sites = webnotes.conn.sql("""select name from `tabSite Details` where flag = 'False' """,as_list=1)
 	# webnotes.errprint(sites)
 	for site in sites:
+
+		"""For Primary site creation, checks site path exist or not"""
 		if not (os.path.exists(os.path.join(get_base_path(), "sites"))):
 			get_obj('Site Details', site[0]).make_primary_sites_settings()
+
+		"""For secondary sites"""
 		if not (os.path.exists(os.path.join(get_base_path(), "sites", site[0]))):
 			get_obj('Site Details', site[0]).create_new_site()
 			webnotes.conn.sql("""update `tabSite Details` set flag = 'True' where name = '%s' """%(site[0]),as_list=1)	

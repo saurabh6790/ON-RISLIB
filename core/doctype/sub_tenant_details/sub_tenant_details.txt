@@ -1,0 +1,90 @@
+[
+ {
+  "creation": "2014-11-27 13:45:03", 
+  "docstatus": 0, 
+  "modified": "2014-11-27 13:45:38", 
+  "modified_by": "Administrator", 
+  "owner": "Administrator"
+ }, 
+ {
+  "autoname": "SUBTEN.#########", 
+  "doctype": "DocType", 
+  "istable": 1, 
+  "module": "Core", 
+  "name": "__common__"
+ }, 
+ {
+  "doctype": "DocField", 
+  "name": "__common__", 
+  "parent": "Sub Tenant Details", 
+  "parentfield": "fields", 
+  "parenttype": "DocType", 
+  "permlevel": 0
+ }, 
+ {
+  "create": 1, 
+  "doctype": "DocPerm", 
+  "name": "__common__", 
+  "parent": "Sub Tenant Details", 
+  "parentfield": "permissions", 
+  "parenttype": "DocType", 
+  "permlevel": 0, 
+  "read": 1, 
+  "write": 1
+ }, 
+ {
+  "doctype": "DocType", 
+  "name": "Sub Tenant Details"
+ }, 
+ {
+  "doctype": "DocField", 
+  "fieldname": "branch_name", 
+  "fieldtype": "Data", 
+  "in_list_view": 1, 
+  "label": "Branch Name"
+ }, 
+ {
+  "doctype": "DocField", 
+  "fieldname": "sub_tenant_url", 
+  "fieldtype": "Data", 
+  "in_list_view": 1, 
+  "label": "Sub Tenant Url", 
+  "reqd": 1
+ }, 
+ {
+  "doctype": "DocField", 
+  "fieldname": "db", 
+  "fieldtype": "Data", 
+  "label": "Sub Tenant Database", 
+  "read_only": 1
+ }, 
+ {
+  "doctype": "DocField", 
+  "fieldname": "pwd", 
+  "fieldtype": "Data", 
+  "label": "Sub Tenant DB Password", 
+  "read_only": 1
+ }, 
+ {
+  "doctype": "DocField", 
+  "fieldname": "no_of_offline_tenants", 
+  "fieldtype": "Data", 
+  "in_list_view": 1, 
+  "label": "No of Offline Tenants"
+ }, 
+ {
+  "doctype": "DocField", 
+  "fieldname": "offline_tenant_id", 
+  "fieldtype": "Small Text", 
+  "label": "Offline Tenant Id", 
+  "read_only": 1
+ }, 
+ {
+  "doctype": "DocPerm", 
+  "role": "Administrator"
+ }, 
+ {
+  "doctype": "DocPerm", 
+  "role": "Super Admin"
+ }
+]
