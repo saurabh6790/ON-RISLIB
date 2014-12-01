@@ -6,9 +6,9 @@
 from __future__ import unicode_literals
 import webnotes
 from install_erpnext import exec_in_shell
-from webnotes.utils import get_base_path, today
+from webnotes.utils import get_base_path, today, cint
 import os
-import pxssh
+# import pxssh
 
 from webnotes.utils import cint, cstr, getdate, now, nowdate, get_defaults
 from setup.page.setup_wizard.setup_wizard import import_core_docs
@@ -18,6 +18,36 @@ class DocType:
 		self.doc, self.doclist = d, dl
 
 	def sync_db(self, patient_id=None):
+		if not (os.path.exists(os.path.join(get_base_path(), "public", 'dbsync.txt'))):
+			if self.validate_tenant():pass
+		else:
+			self.initiate_sync_db(patient_id)
+
+	def validate_tenant(self):
+		tenant_list = [] 
+		if self.doc.host_id and self.doc.remote_dbuser and self.doc.remote_dbuserpassword and self.doc.remote_dbname:
+			db = MySQLdb.connect(self.doc.host_id, self.doc.remote_dbuser, self.doc.remote_dbuserpassword, self.doc.remote_dbname)
+			cursor = db.cursor()
+			
+			cursor.execute("select no_of_offline_tenant from `tabSite Details` where name = '%s' "%(self.doc.host_id))		
+			no_of_offline_tenant = cursor.fetchone()
+			
+			cursor.execute("select ifnull(offline_tenant_id, '') from `tabSite Details` where name = '%s' "%(self.doc.host_id))		
+			offline_tenant_id = cursor.fetchone()
+
+			if cint(no_of_offline_tenant) > 0:
+				if offline_tenant_id:
+					tenant_list = offline_tenant_id.split(',')
+
+				if len(tenant_list) > cint(no_of_offline_tenant):
+					webnotes.msgprint("Tenat Limit Exceeded!!!", raise_exception=1)
+				else:
+					branch_id = webnotes.conn.get_value('Global Details', None, 'branch_id')
+					tenant_list.append(branch_id)
+					cursor.execute("Update `tabSite Details` set offline_tenant_id = '%s' where name = '%s'"%(','.join(tenant_list), self.doc.host_id))
+					cursor.execute("commit")
+
+	def initiate_sync_db(self, patient_id=None):
 		cond = ''
 		if patient_id:
 			cond = self.get_cond(patient_id)
@@ -27,9 +57,9 @@ class DocType:
 			if cond:
 				self.remote_to_local(table, cond, patient_id)
 			else:
-				self.remote_to_local(table, cond,patient_id)
+				# self.remote_to_local(table, cond,patient_id)
 				self.local_to_remote(table)
-			# webnotes.errprint("tab is %s "%patient_id)		
+			# webnotes.errprint("tab is %s "%patient_id)	
 
 	def remote_to_local(self, table, cond, patient_id):
 		remote_settings = self.get_remote_settings(table, cond, patient_id)

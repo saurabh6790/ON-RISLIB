@@ -2,7 +2,7 @@
  {
   "creation": "2014-03-12 11:32:00", 
   "docstatus": 0, 
-  "modified": "2014-04-19 19:08:41", 
+  "modified": "2014-12-01 10:03:27", 
   "modified_by": "Administrator", 
   "owner": "Administrator"
  }, 
@@ -49,37 +49,44 @@
   "doctype": "DocField", 
   "fieldname": "host_id", 
   "fieldtype": "Data", 
-  "label": "Host Id"
+  "label": "Host Id", 
+  "reqd": 1
  }, 
  {
   "doctype": "DocField", 
   "fieldname": "host_ssh_user", 
   "fieldtype": "Data", 
-  "label": "Host SSH User"
+  "hidden": 1, 
+  "label": "Host SSH User", 
+  "reqd": 0
  }, 
  {
   "doctype": "DocField", 
   "fieldname": "host_ssh_password", 
   "fieldtype": "Password", 
+  "hidden": 1, 
   "label": "Host SSH Password"
  }, 
  {
   "doctype": "DocField", 
   "fieldname": "remote_dbuser", 
   "fieldtype": "Data", 
-  "label": "Remote dbUser"
+  "label": "Remote dbUser", 
+  "reqd": 1
  }, 
  {
   "doctype": "DocField", 
   "fieldname": "remote_dbuserpassword", 
   "fieldtype": "Password", 
-  "label": "Remote dbUserPassword"
+  "label": "Remote dbUserPassword", 
+  "reqd": 1
  }, 
  {
   "doctype": "DocField", 
   "fieldname": "remote_dbname", 
   "fieldtype": "Data", 
-  "label": "Remote dbName"
+  "label": "Remote dbName", 
+  "reqd": 1
  }, 
  {
   "doctype": "DocField", 
@@ -91,19 +98,22 @@
   "doctype": "DocField", 
   "fieldname": "dbuser", 
   "fieldtype": "Data", 
-  "label": "dbUser"
+  "label": "dbUser", 
+  "reqd": 1
  }, 
  {
   "doctype": "DocField", 
   "fieldname": "dbuserpassword", 
   "fieldtype": "Password", 
-  "label": "dbUserPassword"
+  "label": "dbUserPassword", 
+  "reqd": 1
  }, 
  {
   "doctype": "DocField", 
   "fieldname": "dbname", 
   "fieldtype": "Data", 
-  "label": "dbName"
+  "label": "dbName", 
+  "reqd": 1
  }, 
  {
   "doctype": "DocField", 

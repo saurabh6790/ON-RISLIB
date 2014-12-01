@@ -108,7 +108,9 @@ login.do_sync = function(){
 		success: function(data) {
 			$("#sync-spinner").toggle(false);
 			$('#sync_db').prop("disabled", true);
-			login.set_message("Sync Completed");
+			if(!data.exe){
+				login.set_message("Sync Completed");
+			}
 		}	
 	})
 	
