@@ -33,13 +33,13 @@ class DocType:
 			
 			cursor.execute("select no_of_offline_tenant from `tabSite Details` where name = '%s' "%(self.doc.host_id))		
 			no_of_offline_tenant = cursor.fetchone()
-			webnotes.errprint(no_of_offline_tenant[0][0])
+			
 			cursor.execute("select ifnull(offline_tenant_id, '') from `tabSite Details` where name = '%s' "%(self.doc.host_id))		
 			offline_tenant_id = cursor.fetchone()
 
 			if cint(no_of_offline_tenant[0][0]) > 0:
 				if offline_tenant_id:
-					webnotes.errprint(offline_tenant_id[0])
+					
 					tenant_list = offline_tenant_id[0].split(',')
 
 				if len(tenant_list) > cint(no_of_offline_tenant[0][0]):
@@ -47,7 +47,7 @@ class DocType:
 				else:
 					branch_id = webnotes.conn.get_value('Global Defaults', None, 'branch_id')
 					tenant_list.append(branch_id)
-					webnotes.errprint([tenant_list, branch_id])
+					
 					cursor.execute("Update `tabSite Details` set offline_tenant_id = '%s' where name = '%s'"%(','.join(x for x in tenant_list if x), self.doc.host_id))
 					cursor.execute("commit")
 			else:
