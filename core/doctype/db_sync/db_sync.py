@@ -77,7 +77,7 @@ class DocType:
 				exec_in_shell("""mysqldump --host='%(host_id)s'  -u %(remote_dbuser)s -p'%(remote_dbuserpassword)s' %(remote_dbname)s -t --replace "%(tab)s" %(cond)s > %(file_path)s/up%(file_name)s.sql"""%remote_settings)
 				exec_in_shell("""mysql -u %(dbuser)s -p'%(dbuserpassword)s' %(dbname)s < %(file_path)s/up%(file_name)s.sql"""%local_settings)
 			except Exception as inst: 
-				webnotes.msgprint(inst)
+				webnotes.msgprint(inst, raise_exception=1)
 
 		if table == 'tabSingles':
 			self.sync_active_status()
@@ -103,7 +103,8 @@ class DocType:
 				exec_in_shell("""mysqldump -u %(dbuser)s -p'%(dbuserpassword)s' %(dbname)s -t --replace "%(tab)s" > %(file_path)s/dw%(file_name)s.sql"""%local_settings)
 				exec_in_shell("""mysql --host='%(host_id)s'  -u %(remote_dbuser)s -p'%(remote_dbuserpassword)s' %(remote_dbname)s < %(file_path)s/dw%(file_name)s.sql"""%remote_settings)
 				self.set_sync_date()
-			except Exception as inst: pass
+			except Exception as inst:
+				webnotes.msgprint(inst, raise_exception=1)
 
 	def get_remote_settings(self, table, cond=None, patient_id=None):
 		if cond:
