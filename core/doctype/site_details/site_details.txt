@@ -2,7 +2,7 @@
  {
   "creation": "2014-04-11 08:45:50", 
   "docstatus": 0, 
-  "modified": "2014-12-02 17:09:35", 
+  "modified": "2014-12-08 10:42:23", 
   "modified_by": "Administrator", 
   "owner": "Administrator"
  }, 
@@ -115,7 +115,6 @@
   "fieldtype": "Column Break"
  }, 
  {
-  "depends_on": "eval:doc.sub_tenant_required != 'Yes'", 
   "doctype": "DocField", 
   "fieldname": "offline_setup_required", 
   "fieldtype": "Select", 
@@ -123,14 +122,14 @@
   "options": "\nYes\nNo"
  }, 
  {
-  "depends_on": "eval:doc.sub_tenant_required  != 'Yes' && doc.offline_setup_required=='Yes'", 
+  "depends_on": "eval:doc.offline_setup_required=='Yes'", 
   "doctype": "DocField", 
   "fieldname": "no_of_offline_tenant", 
   "fieldtype": "Data", 
   "label": "No of Offline Tenant"
  }, 
  {
-  "depends_on": "eval:doc.sub_tenant_required  != 'Yes' && doc.offline_setup_required=='Yes'", 
+  "depends_on": "eval:doc.offline_setup_required=='Yes'", 
   "doctype": "DocField", 
   "fieldname": "offline_tenant_id", 
   "fieldtype": "Small Text", 
