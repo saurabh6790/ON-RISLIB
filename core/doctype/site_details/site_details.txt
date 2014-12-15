@@ -2,7 +2,7 @@
  {
   "creation": "2014-04-11 08:45:50", 
   "docstatus": 0, 
-  "modified": "2014-12-08 10:42:23", 
+  "modified": "2014-12-15 10:00:14", 
   "modified_by": "Administrator", 
   "owner": "Administrator"
  }, 
@@ -86,6 +86,13 @@
   "label": "Flag", 
   "options": "False\nTrue", 
   "read_only": 1
+ }, 
+ {
+  "doctype": "DocField", 
+  "fieldname": "create_site", 
+  "fieldtype": "Button", 
+  "label": "Create Site", 
+  "options": "create_new_site"
  }, 
  {
   "doctype": "DocField", 

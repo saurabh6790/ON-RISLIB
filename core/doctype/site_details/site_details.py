@@ -16,6 +16,7 @@ class DocType:
 		self.doc, self.doclist = d, dl
 
 	def on_update(self):
+		self.create_new_site()
 		if (os.path.exists(os.path.join(get_base_path(), "sites", self.doc.site_name))):
 			self.update_global_defaults()
 		webnotes.msgprint("Updated")
@@ -195,8 +196,8 @@ http {
 
 	def create_new_site(self):
 		root_password = webnotes.conn.get_value("Global Defaults", None, "root_password")
-		# self.initiate_tenant_ctreation(root_password, self.doc.site_name, True)
-
+		self.initiate_tenant_ctreation(root_password, self.doc.site_name, True)
+		
 		for row in getlist(self.doclist, 'sub_tenant'):
 			self.initiate_tenant_ctreation(root_password, row.sub_tenant_url)	
 
@@ -211,6 +212,8 @@ http {
 
 		if is_parent:
 			self.update_db_name_pwd()
+		else:
+			self.update_child_details(site_name)
 
 	def add_to_hosts(self, site_name):
 		webnotes.errprint("host")
@@ -228,6 +231,15 @@ http {
 		db_name = lines[1].split(':')[1].replace('"','')[:-3]
 		db_pwd = lines[2].split(':')[1].replace('"','')[:-1]
 		webnotes.conn.sql("update `tabSite Details` set database_name = LTRIM('%s'), database_password = LTRIM('%s') where name = '%s' "%(db_name, db_pwd, self.doc.name), debug=1)
+		webnotes.conn.sql("commit")
+
+	def update_child_details(self, sub_tenant_url):
+		with open (get_base_path()+'/sites/'+sub_tenant_url+'/site_config.json', 'r') as site_config:
+			lines = site_config.readlines()
+
+		db_name = lines[1].split(':')[1].replace('"','')[:-3]
+		db_pwd = lines[2].split(':')[1].replace('"','')[:-1]
+		webnotes.conn.sql("update `tabSub Tenant Details` set db = LTRIM('%s'), pwd = LTRIM('%s') where sub_tenant_url = '%s' "%(db_name, db_pwd, sub_tenant_url), debug=1)
 		webnotes.conn.sql("commit")
 
 	def update_global_defaults(self):
@@ -279,4 +291,4 @@ def create_site():
 		"""For secondary sites"""
 		if not (os.path.exists(os.path.join(get_base_path(), "sites", site[0]))):
 			get_obj('Site Details', site[0]).create_new_site()
-			webnotes.conn.sql("""update `tabSite Details` set flag = 'True' where name = '%s' """%(site[0]),as_list=1)	
+			# webnotes.conn.sql("""update `tabSite Details` set flag = 'True' where name = '%s' """%(site[0]),as_list=1)	
