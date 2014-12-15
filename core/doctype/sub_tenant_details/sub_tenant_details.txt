@@ -2,7 +2,7 @@
  {
   "creation": "2014-11-27 13:45:03", 
   "docstatus": 0, 
-  "modified": "2014-12-08 10:43:47", 
+  "modified": "2014-12-10 09:22:33", 
   "modified_by": "Administrator", 
   "owner": "Administrator"
  }, 
@@ -67,9 +67,9 @@
  }, 
  {
   "doctype": "DocField", 
-  "fieldname": "no_of_offline_tenants", 
+  "fieldname": "no_of_offline_tenant", 
   "fieldtype": "Data", 
-  "hidden": 1, 
+  "hidden": 0, 
   "in_list_view": 1, 
   "label": "No of Offline Tenants"
  }, 
@@ -77,7 +77,7 @@
   "doctype": "DocField", 
   "fieldname": "offline_tenant_id", 
   "fieldtype": "Small Text", 
-  "hidden": 1, 
+  "hidden": 0, 
   "label": "Offline Tenant Id", 
   "read_only": 1
  }, 

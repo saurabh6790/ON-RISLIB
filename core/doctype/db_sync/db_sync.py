@@ -28,30 +28,52 @@ class DocType:
 	def validate_tenant(self):
 		tenant_list = [] 
 		if self.doc.host_id and self.doc.remote_dbuser and self.doc.remote_dbuserpassword and self.doc.remote_dbname:
-			db = MySQLdb.connect(self.doc.host_id, self.doc.remote_dbuser, self.doc.remote_dbuserpassword, self.doc.remote_dbname)
+			db = MySQLdb.connect('eiims.medsynaptic.com', 'ris', '6xkWqXZ1PtUSVfJj', 'ris')
 			cursor = db.cursor()
 			
-			cursor.execute("select no_of_offline_tenant from `tabSite Details` where name = '%s' "%(self.doc.host_id))		
-			no_of_offline_tenant = cursor.fetchone()
+			tab = self.get_tab(self.doc.host_id, cursor)
 			
-			cursor.execute("select ifnull(offline_tenant_id, '') from `tabSite Details` where name = '%s' "%(self.doc.host_id))		
-			offline_tenant_id = cursor.fetchone()
+			if tab:
+				cursor.execute("select no_of_offline_tenant from %s where %s = '%s' "%(tab['tab'], tab['field'], self.doc.host_id))		
+				no_of_offline_tenant = cursor.fetchone()
+				
+				cursor.execute("select ifnull(offline_tenant_id, '') from %s where %s = '%s' "%(tab['tab'], tab['field'], self.doc.host_id))		
+				offline_tenant_id = cursor.fetchone()
+				
+				if no_of_offline_tenant:
+					if cint(no_of_offline_tenant[0][0]) > 0:
+						if offline_tenant_id:
+							
+							tenant_list = offline_tenant_id[0].split(',')
 
-			if cint(no_of_offline_tenant[0][0]) > 0:
-				if offline_tenant_id:
-					
-					tenant_list = offline_tenant_id[0].split(',')
-
-				if len(tenant_list) > cint(no_of_offline_tenant[0][0]):
-					webnotes.msgprint("Tenat Limit Exceeded!!!", raise_exception=1)
+						if len(tenant_list) == cint(no_of_offline_tenant[0][0]):
+							webnotes.msgprint("Tenat Limit Exceeded!!!", raise_exception=1)
+						else:
+							branch_id = webnotes.conn.get_value('Global Defaults', None, 'branch_id')
+							tenant_list.append(branch_id)
+							
+							cursor.execute("Update %s set offline_tenant_id = '%s' where %s = '%s'"%(tab['tab'], ','.join(x for x in tenant_list if x), tab['field'], self.doc.host_id))
+							cursor.execute("commit")
+					else:
+						webnotes.msgprint("Offline tenant not register with this system", raise_exception=1)
 				else:
-					branch_id = webnotes.conn.get_value('Global Defaults', None, 'branch_id')
-					tenant_list.append(branch_id)
-					
-					cursor.execute("Update `tabSite Details` set offline_tenant_id = '%s' where name = '%s'"%(','.join(x for x in tenant_list if x), self.doc.host_id))
-					cursor.execute("commit")
-			else:
-				webnotes.msgprint("Offline tenant not register with this system", raise_exception=1)
+					webnotes.msgprint("Offline tenant not register with this system", raise_exception=1)
+	
+	def get_tab(self, host_id, cursor):
+		cursor.execute("select true from `tabSite Details` where name = '%s'"%(host_id))
+		is_tenant = cursor.fetchone()
+
+		if is_tenant:
+			return {'tab': '`tabSite Details`', 'field':'name'}
+
+		cursor.execute("select true from `tabSub Tenant Details` where sub_tenant_url = '%s'"%(host_id))
+		is_tenant = cursor.fetchone()
+
+		if is_tenant:
+			return {'tab':'`tabSub Tenant Details`', 'field': 'sub_tenant_url'}
+
+		else:
+			webnotes.msgprint('Tenant Not Yet Registered',raise_exception=1)
 
 	def initiate_sync_db(self, patient_id=None):
 		cond = ''
