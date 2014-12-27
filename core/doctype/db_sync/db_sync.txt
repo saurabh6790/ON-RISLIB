@@ -2,7 +2,7 @@
  {
   "creation": "2014-03-12 11:32:00", 
   "docstatus": 0, 
-  "modified": "2014-12-01 10:03:27", 
+  "modified": "2014-12-26 20:38:48", 
   "modified_by": "Administrator", 
   "owner": "Administrator"
  }, 
@@ -30,8 +30,6 @@
   "parenttype": "DocType", 
   "permlevel": 0, 
   "read": 1, 
-  "report": 0, 
-  "role": "Administrator", 
   "write": 1
  }, 
  {
@@ -153,6 +151,12 @@
   "options": "main_server_sync"
  }, 
  {
-  "doctype": "DocPerm"
+  "doctype": "DocPerm", 
+  "report": 0, 
+  "role": "Administrator"
+ }, 
+ {
+  "doctype": "DocPerm", 
+  "role": "System Manager"
  }
 ]

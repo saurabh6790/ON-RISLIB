@@ -169,21 +169,22 @@ class LoginManager:
 
 	def last_sync(self):
 		from webnotes.utils import today,date_diff, cint
-		print("In the db sync flag")
+		import os.path
+
 		last_sync_date=''
 		if cstr(webnotes.conn.get_value('Global Defaults', None, 'db_sync_flag')) == 'Yes':
 			file_path=os.path.join(get_base_path(), "public")
 			f2=file_path+'/'+"dbsync.txt"
-			for line in open(f2, "r"):
-				msg, key = line.split(",")
-				decrypt=self.decrypt(key,msg)
-				try:
-					last_sync_date=getdate(decrypt)
-				except Exception, e:
-					self.fail('There are some manual interpretation with system file.Please Sync to continue')
+			if os.path.exists(f2):
+				for line in open(f2, "r"):
+					msg, key = line.split(",")
+					decrypt=self.decrypt(key,msg)
+					try:
+						last_sync_date=getdate(decrypt)
+					except Exception, e:
+						self.fail('There are some manual interpretation with system file.Please Sync to continue')
 					
 		# last_sync_date='2014-11-07'
-		print (last_sync_date)			
 		if last_sync_date:
 			if cint(webnotes.conn.get_value('Global Defaults', None, 'must_sync_after')) < date_diff(today(), last_sync_date):
 				return False
