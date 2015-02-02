@@ -126,7 +126,7 @@ class LoginManager:
 	def authenticate(self, user=None, pwd=None):
 		# return True
 
-		if self.check_uuid():
+		# if self.check_uuid():
 			if self.last_sync():
 				if self.is_active():
 					if not (user and pwd):	
@@ -140,8 +140,8 @@ class LoginManager:
 					self.fail('Your Account has been deactivated ')
 			else:
 				self.fail('Need to sync first')
-		else:
-			self.fail("Hardware verification failed")
+		# else:
+		# 	self.fail("Hardware verification failed")
 
 	def check_uuid(self):
 		if webnotes.conn.get_value('Global Defaults', None, 'default_company'):
