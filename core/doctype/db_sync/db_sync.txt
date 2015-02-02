@@ -2,7 +2,7 @@
  {
   "creation": "2014-03-12 11:32:00", 
   "docstatus": 0, 
-  "modified": "2014-12-26 20:38:48", 
+  "modified": "2014-12-28 00:10:17", 
   "modified_by": "Administrator", 
   "owner": "Administrator"
  }, 
@@ -41,6 +41,13 @@
   "fieldname": "remote_host_settings", 
   "fieldtype": "Section Break", 
   "label": "Remote Host Settings"
+ }, 
+ {
+  "doctype": "DocField", 
+  "fieldname": "barcode", 
+  "fieldtype": "Data", 
+  "label": "Barcode", 
+  "reqd": 1
  }, 
  {
   "description": "Enter server's IP address here", 

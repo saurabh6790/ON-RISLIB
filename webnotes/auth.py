@@ -124,26 +124,24 @@ class LoginManager:
 
 		
 	def authenticate(self, user=None, pwd=None):
-		print("in the authenticate")
-						
 		# return True
 
-		# if self.check_uuid():
-		if self.last_sync():
-			if self.is_active():
-				if not (user and pwd):	
-					user, pwd = webnotes.form_dict.get('usr'), webnotes.form_dict.get('pwd')
-				if not (user and pwd):
-					self.fail('Incomplete login details')
+		if self.check_uuid():
+			if self.last_sync():
+				if self.is_active():
+					if not (user and pwd):	
+						user, pwd = webnotes.form_dict.get('usr'), webnotes.form_dict.get('pwd')
+					if not (user and pwd):
+						self.fail('Incomplete login details')
 
-				self.check_if_enabled(user)
-				self.user = self.check_password(user, pwd)
+					self.check_if_enabled(user)
+					self.user = self.check_password(user, pwd)
+				else:
+					self.fail('Your Account has been deactivated ')
 			else:
-				self.fail('Your Account has been deactivated ')
+				self.fail('Need to sync first')
 		else:
-			self.fail('Need to sync first')
-		# else:
-		# 	self.fail("Hardware verification failed")
+			self.fail("Hardware verification failed")
 
 	def check_uuid(self):
 		if webnotes.conn.get_value('Global Defaults', None, 'default_company'):
@@ -185,9 +183,19 @@ class LoginManager:
 						self.fail('There are some manual interpretation with system file.Please Sync to continue')
 					
 		# last_sync_date='2014-11-07'
+
+		adm_creation = cstr(webnotes.conn.get_value("Profile", 'Administrator', 'creation')).split(" ")[0]
+
+		if date_diff(today(), getdate(adm_creation)) > 1:
+			return False
+
 		if last_sync_date:
-			if cint(webnotes.conn.get_value('Global Defaults', None, 'must_sync_after')) < date_diff(today(), last_sync_date):
+			must_sync_after = webnotes.conn.get_value('Global Defaults', None, 'must_sync_after')
+			must_sync = cint(must_sync_after) if must_sync_after else 30 
+			
+			if must_sync < date_diff(today(), last_sync_date):
 				return False
+				
 		return True
 
 	def is_active(self):
