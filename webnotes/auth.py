@@ -124,8 +124,6 @@ class LoginManager:
 
 		
 	def authenticate(self, user=None, pwd=None):
-		print("in the authenticate")
-						
 		# return True
 
 		# if self.check_uuid():
@@ -142,6 +140,7 @@ class LoginManager:
 		# 		self.fail('Your Account has been deactivated ')
 		# else:
 		# 	self.fail('Need to sync first')
+
 		# else:
 		# 	self.fail("Hardware verification failed")
 
